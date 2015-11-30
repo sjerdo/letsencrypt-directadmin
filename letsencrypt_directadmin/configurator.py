@@ -11,6 +11,8 @@ from letsencrypt import errors
 from letsencrypt import interfaces
 from letsencrypt.plugins import common
 
+import directadmin
+
 
 class Configurator(common.Plugin):
     """DirectAdmin API Configurator."""
@@ -49,10 +51,12 @@ automatically. """
         self.da_api_client = None
 
     def prepare(self):
+        self.da_api_client = directadmin.Api("test", "test", "relisten.nl", 2222, https=False)
+        # TODO: init the da_api_client here
         pass  # pragma: no cover
 
     def get_chall_pref(self, domain):
-        #TODO: implement other challenges?
+        # TODO: implement other challenges?
         #               challenges.TLSSNI01
         #        and/or challenges.RecoveryContact
         #        and/or challenges.ProofOfPossession
