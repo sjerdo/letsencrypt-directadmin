@@ -93,11 +93,9 @@ automatically. """
 
     def cleanup(self, achalls):
         """Revert all challenges."""
-        # TODO: revert all challenges
         for x in achalls:
-            pass
-            #if x.domain in self.plesk_challenges:
-            #    self.plesk_challenges[x.domain].cleanup(x)
+            if x.domain in self.da_challenges:
+                self.da_challenges[x.domain].cleanup(x)
 
     def get_all_names(self):
         """Returns all names that may be authenticated."""
