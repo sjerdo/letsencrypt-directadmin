@@ -41,4 +41,4 @@ class DirectAdminHTTP01Challenge(object):
         """Remove validation file and directories."""
         path = self.da_api_client.get_public_html_path(achall.domain)
         dirname = os.path.dirname(achall.URI_ROOT_PATH)
-        self.da_api_client.remove_directory(path, achall.URI_ROOT_PATH)
+        self.da_api_client.remove_folder(os.path.join(path, dirname))

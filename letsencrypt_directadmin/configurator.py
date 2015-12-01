@@ -62,7 +62,6 @@ automatically. """
                 # TODO: Allow the user to specify the server as https://user:loginkey@localhost:2222/
                 raise PluginError('User did not supply a DirectAdmin Server url.')
             parsed_url = urlsplit(self.conf('server'))
-            print directadmin
             self.da_api_client = directadmin.Api(
                 https=(False if parsed_url.scheme == 'http' else True),
                 hostname=(parsed_url.hostname if parsed_url.hostname else 'localhost'),

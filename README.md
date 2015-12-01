@@ -19,3 +19,8 @@ If you would like to use DirectAdmin Login Keys (which is recommended) instead o
 * CMD_API_DOMAIN_POINTER
 * CMD_API_SUBDOMAINS
 * CMD_API_FILE_MANAGER
+
+# TODO's
+* www. prefix of domain is not yet supported
+* subdomains are not yet supported
+* subdomains of domain pointers are not yet supported
