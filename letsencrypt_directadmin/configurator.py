@@ -165,8 +165,9 @@ automatically. """
         pass  # pragma: no cover
 
     def recovery_routine(self):
-        print 'recovery_routine called'
-        pass  # pragma: no cover
+        """Revert deployer changes."""
+        for domain in self.da_deployers:
+            self.da_deployers[domain].revert()
 
     def view_config_changes(self):
         print 'view_config_changes called'
