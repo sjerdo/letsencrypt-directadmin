@@ -71,6 +71,7 @@ automatically. """
                 username=self.conf('username'),
                 password=self.conf('login-key'))
         # TODO: check if da server exists, credentials are correct, permissions are okay and ssl certificates are supported
+        self.da_api_client.test_login()
         pass  # pragma: no cover
 
     def get_chall_pref(self, domain):
@@ -108,8 +109,10 @@ automatically. """
         domains = self.da_api_client.list_domains()
         for domain in domains:
             alldomains.append(domain)
+            print domain
+            print self.da_api_client.list_additional_domains()
             print self.da_api_client.list_domain_pointers(domain)
-            #print self.da_api_client.list_additional_domains()
+            print self.da_api_client.list_subdomains(domain)
         return alldomains
 
     def deploy_cert(self, domain, cert_path, key_path,
