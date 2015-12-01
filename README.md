@@ -11,3 +11,10 @@ You can simply run the client by executing the command
 ```letsencrypt --configurator letsencrypt-directadmin:directadmin```
 
 # TODO: instructions about config file
+
+# DirectAdmin Login Keys
+If you would like to use DirectAdmin Login Keys (which is recommended) instead of your password, the login key should be allowed to use the following commands:
+* CMD_API_LOGIN_TEST
+* CMD_API_SHOW_DOMAINS
+* CMD_API_DOMAIN_POINTER
+* CMD_API_SUBDOMAINS

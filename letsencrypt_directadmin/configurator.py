@@ -87,6 +87,7 @@ automatically. """
         """Perform the configuration related challenge."""
         responses = []
         for x in achalls:
+            raise PluginError('Challenges not yet implemented for plugin DirectAdmin')
             pass
             #plesk_challenge = challenge.PleskChallenge(self.plesk_api_client)
             #responses.append(plesk_challenge.perform(x))
@@ -101,18 +102,20 @@ automatically. """
             #if x.domain in self.plesk_challenges:
             #    self.plesk_challenges[x.domain].cleanup(x)
 
-
     def get_all_names(self):
-        # TODO: DA API: CMD_API_ADDITIONAL_DOMAINS
-        # TODO: Include subdomains..
+        """Returns all names that may be authenticated."""
         alldomains = []
         domains = self.da_api_client.list_domains()
         for domain in domains:
-            alldomains.append(domain)
-            print domain
-            print self.da_api_client.list_additional_domains()
-            print self.da_api_client.list_domain_pointers(domain)
-            print self.da_api_client.list_subdomains(domain)
+            # prepend www. to all (sub-)domains and (sub-)pointers..
+            subdomains = self.da_api_client.list_subdomains(domain)
+            prefixes = ['www.', '']
+            prefixes += [p + s + '.' for s in subdomains for p in prefixes]
+            alldomains += [p + domain for p in prefixes]
+
+            # add the pointers
+            pointers = self.da_api_client.list_domain_pointers(domain)
+            alldomains += [p + d for d in pointers for p in prefixes]
         return alldomains
 
     def deploy_cert(self, domain, cert_path, key_path,
