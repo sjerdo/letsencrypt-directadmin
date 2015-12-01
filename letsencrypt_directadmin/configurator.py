@@ -15,9 +15,8 @@ from letsencrypt.errors import PluginError
 # Hacky fix to include the git submodule (python-directadmin should be in PyPI?)
 import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../python-directadmin/'))
-print sys.path
-
 import directadmin
+from letsencrypt_directadmin import challenge
 from urlparse import urlsplit
 
 
@@ -87,11 +86,9 @@ automatically. """
         """Perform the configuration related challenge."""
         responses = []
         for x in achalls:
-            raise PluginError('Challenges not yet implemented for plugin DirectAdmin')
-            pass
-            #plesk_challenge = challenge.PleskChallenge(self.plesk_api_client)
-            #responses.append(plesk_challenge.perform(x))
-            #self.plesk_challenges[x.domain] = plesk_challenge
+            da_challenge = challenge.DirectAdminHTTP01Challenge(self.da_api_client)
+            responses.append(da_challenge.perform(x))
+            self.da_challenges[x.domain] = da_challenge
         return responses
 
     def cleanup(self, achalls):
@@ -107,13 +104,15 @@ automatically. """
         alldomains = []
         domains = self.da_api_client.list_domains()
         for domain in domains:
-            # prepend www. to all (sub-)domains and (sub-)pointers..
+            # make a list of prefixes (including www. and all subdomains)
             subdomains = self.da_api_client.list_subdomains(domain)
             prefixes = ['www.', '']
             prefixes += [p + s + '.' for s in subdomains for p in prefixes]
+
+            # add the main domain to the list of names
             alldomains += [p + domain for p in prefixes]
 
-            # add the pointers
+            # add the pointers to the list of names
             pointers = self.da_api_client.list_domain_pointers(domain)
             alldomains += [p + d for d in pointers for p in prefixes]
         return alldomains
@@ -147,4 +146,5 @@ automatically. """
         pass  # pragma: no cover
 
     def restart(self):
+        # TODO: cleanup
         pass  # pragma: no cover

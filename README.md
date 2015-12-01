@@ -18,3 +18,4 @@ If you would like to use DirectAdmin Login Keys (which is recommended) instead o
 * CMD_API_SHOW_DOMAINS
 * CMD_API_DOMAIN_POINTER
 * CMD_API_SUBDOMAINS
+* CMD_API_FILE_MANAGER
