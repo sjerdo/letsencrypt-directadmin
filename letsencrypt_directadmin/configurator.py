@@ -16,7 +16,7 @@ from letsencrypt.errors import PluginError
 import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../python-directadmin/'))
 import directadmin
-from letsencrypt_directadmin import challenge
+from letsencrypt_directadmin import challenge, deployer
 from urlparse import urlsplit
 
 
@@ -57,9 +57,9 @@ automatically. """
 
     def prepare(self):
         if self.da_api_client is None:
+            # TODO: Allow the user to specify the server as https://user:loginkey@localhost:2222/
             if self.conf('server') is None:
                 # TODO: check if there is a local server at https://localhost:2222 (with non-ssl fallback?)
-                # TODO: Allow the user to specify the server as https://user:loginkey@localhost:2222/
                 raise PluginError('User did not supply a DirectAdmin Server url.')
             parsed_url = urlsplit(self.conf('server'))
             self.da_api_client = directadmin.Api(
@@ -70,7 +70,6 @@ automatically. """
                 password=self.conf('login-key'))
         # TODO: check if da server exists, credentials are correct, permissions are okay and ssl certificates are supported
         self.da_api_client.test_login()
-        pass  # pragma: no cover
 
     def get_chall_pref(self, domain):
         """Return list of challenge preferences."""
@@ -116,32 +115,68 @@ automatically. """
 
     def deploy_cert(self, domain, cert_path, key_path,
                     chain_path=None, fullchain_path=None):
-        pass  # pragma: no cover
+        """Initialize deploy certificate in DirectAdmin via API."""
+        (base, subdomain) = self.da_api_client.get_base_domain(domain)
+        if base is None:
+            raise PluginError('Unknown domain {} got authorized'.format(domain))
+        if base in self.da_deployers:
+            self.da_deployers[base].add_domain(domain)
+        else:
+            da_deployer = deployer.DirectAdminDeployer(self.da_api_client, base)
+            da_deployer.add_domain(domain)
+            with open(cert_path) as cert_file:
+                cert_data = cert_file.read()
+            with open(key_path) as key_file:
+                key_data = key_file.read()
+            if fullchain_path:
+                with open(fullchain_path) as chain_file:
+                    chain_data = chain_file.read()
+            elif chain_path:
+                with open(chain_path) as chain_file:
+                    chain_data = chain_file.read()
+            else:
+                chain_data = None
+
+            da_deployer.init_cert(cert_data, key_data, chain_data)
+            self.da_deployers[base] = da_deployer
 
     def enhance(self, domain, enhancement, options=None):
+        print 'enhance called', domain, enhancement, options
         pass  # pragma: no cover
 
     def supported_enhancements(self):
+        print 'supported_enhancements called'
         return []
 
     def get_all_certs_keys(self):
+        print 'get_all_certs_keys called'
         return []
 
     def save(self, title=None, temporary=False):
-        pass  # pragma: no cover
+        print 'save called', title, temporary
+        """Push DirectAdmin to deploy certificate(s)."""
+        for domain in self.da_deployers:
+            da_deployer = self.da_deployers[domain]
+            if not da_deployer.cert_installed:
+                da_deployer.install_cert()
 
     def rollback_checkpoints(self, rollback=1):
+        print 'rollback_checkpoints called'
         pass  # pragma: no cover
 
     def recovery_routine(self):
+        print 'recovery_routine called'
         pass  # pragma: no cover
 
     def view_config_changes(self):
+        print 'view_config_changes called'
         pass  # pragma: no cover
 
     def config_test(self):
+        print 'config_test called'
         pass  # pragma: no cover
 
     def restart(self):
+        print 'restart called'
         # TODO: cleanup
         pass  # pragma: no cover
