@@ -21,7 +21,3 @@ If you would like to use DirectAdmin Login Keys (which is recommended) instead o
 * CMD_API_SUBDOMAINS
 * CMD_API_FILE_MANAGER
 * CMD_API_SSL
-
-# TODO's
-* subdomains are not yet supported
-* subdomains of domain pointers are not yet supported
