@@ -10,8 +10,15 @@ from acme import challenges
 from letsencrypt import errors
 from letsencrypt import interfaces
 from letsencrypt.plugins import common
+from letsencrypt.errors import PluginError
+
+# Hacky fix to include the git submodule (python-directadmin should be in PyPI?)
+import sys
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../python-directadmin/'))
+print sys.path
 
 import directadmin
+from urlparse import urlsplit
 
 
 class Configurator(common.Plugin):
@@ -34,8 +41,7 @@ automatically. """
     @classmethod
     def add_parser_arguments(cls, add):
         add("server", default=os.getenv('DA_SERVER'),
-            # TODO: ssl support
-            help="DirectAdmin Server (can include port, standard 2222)")
+            help="DirectAdmin Server (can include port, standard 2222, include http:// if the DA server does not support SSL)")
         add("username", default=os.getenv('DA_USERNAME'),
             help="DirectAdmin Username")
         add("login-key", default=os.getenv('DA_LOGIN_KEY'),
@@ -51,11 +57,24 @@ automatically. """
         self.da_api_client = None
 
     def prepare(self):
-        self.da_api_client = directadmin.Api("test", "test", "relisten.nl", 2222, https=False)
-        # TODO: init the da_api_client here
+        if self.da_api_client is None:
+            if self.conf('server') is None:
+                # TODO: check if there is a local server at https://localhost:2222 (with non-ssl fallback?)
+                # TODO: Allow the user to specify the server as https://user:loginkey@localhost:2222/
+                raise PluginError('User did not supply a DirectAdmin Server url.')
+            parsed_url = urlsplit(self.conf('server'))
+            print directadmin
+            self.da_api_client = directadmin.Api(
+                https=(False if parsed_url.scheme == 'http' else True),
+                hostname=(parsed_url.hostname if parsed_url.hostname else 'localhost'),
+                port=(parsed_url.port if parsed_url.port else 2222),
+                username=self.conf('username'),
+                password=self.conf('login-key'))
+        # TODO: check if da server exists, credentials are correct, permissions are okay and ssl certificates are supported
         pass  # pragma: no cover
 
     def get_chall_pref(self, domain):
+        """Return list of challenge preferences."""
         # TODO: implement other challenges?
         #               challenges.TLSSNI01
         #        and/or challenges.RecoveryContact
@@ -63,10 +82,35 @@ automatically. """
         #        and/or challenges.DNS
         return [challenges.HTTP01]
 
+    def perform(self, achalls):
+        """Perform the configuration related challenge."""
+        responses = []
+        for x in achalls:
+            pass
+            #plesk_challenge = challenge.PleskChallenge(self.plesk_api_client)
+            #responses.append(plesk_challenge.perform(x))
+            #self.plesk_challenges[x.domain] = plesk_challenge
+        return responses
+
+    def cleanup(self, achalls):
+        """Revert all challenges."""
+        # TODO: revert all challenges
+        for x in achalls:
+            pass
+            #if x.domain in self.plesk_challenges:
+            #    self.plesk_challenges[x.domain].cleanup(x)
+
+
     def get_all_names(self):
         # TODO: DA API: CMD_API_ADDITIONAL_DOMAINS
         # TODO: Include subdomains..
-        return []
+        alldomains = []
+        domains = self.da_api_client.list_domains()
+        for domain in domains:
+            alldomains.append(domain)
+            print self.da_api_client.list_domain_pointers(domain)
+            #print self.da_api_client.list_additional_domains()
+        return alldomains
 
     def deploy_cert(self, domain, cert_path, key_path,
                     chain_path=None, fullchain_path=None):
