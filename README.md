@@ -2,9 +2,11 @@
 
 # Installation
 * download the letsencrypt client at https://github.com/letsencrypt/letsencrypt and set it up
-* clone this repository in the same directory using `git --git-dir=.gittwo clone git@github.com:sjerdo/letsencrypt-directadmin.git tmp && mv tmp/.gittwo && rm -rf tmp && git --git-dir=.gittwo reset --hard .`
+* clone this repository in the same directory using `git clone git@github.com:sjerdo/letsencrypt-directadmin.git tmp && mv tmp/.git .gittwo && rm -rf tmp && git --git-dir=.gittwo reset --hard .`
 * update git submodules using `git --git-dir=.gittwo submodule init && git --git-dir=.gittwo submodule update`
-* Run `./venv/bin/python setup-directadmin.py develop`
+* Run `python setup-directadmin.py develop`
+* 
+It is also possible to use a virtual environment (eg. ./venv/bin/python)
 
 # Run
 You can run the client by executing the command
