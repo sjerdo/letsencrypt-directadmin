@@ -7,7 +7,7 @@ setup(
         'zope.interface',
     ],
     packages=['letsencrypt_directadmin', 'directadmin'],
-    package_dir={'letsencrypt_directadmin': 'letsencrypt_directadmin', 'directadmin': 'python-directadmin/build/lib/directadmin'},
+    package_dir={'letsencrypt_directadmin': 'letsencrypt_directadmin', 'directadmin': 'python-directadmin/directadmin'},
     entry_points={
         'letsencrypt.plugins': [
             'directadmin = letsencrypt_directadmin.configurator:Configurator',

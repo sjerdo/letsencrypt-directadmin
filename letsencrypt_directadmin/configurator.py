@@ -153,7 +153,6 @@ automatically. """
         return []
 
     def save(self, title=None, temporary=False):
-        print 'save called', title, temporary
         """Push DirectAdmin to deploy certificate(s)."""
         for domain in self.da_deployers:
             da_deployer = self.da_deployers[domain]
