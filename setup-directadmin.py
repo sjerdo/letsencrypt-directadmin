@@ -8,7 +8,7 @@ setup(
         'python-directadmin>=0.6.1'
     ],
     packages=['letsencrypt_directadmin'],
-    dependency_links = ['http://github.com/sjerdo/python-directadmin/tarball/master#egg=python-directadmin-0.6.1'],
+    dependency_links = ['https://github.com/sjerdo/python-directadmin/tarball/master#egg=python-directadmin-0.6.1'],
     package_dir={'letsencrypt_directadmin': 'letsencrypt_directadmin'},
     entry_points={
         'letsencrypt.plugins': [
