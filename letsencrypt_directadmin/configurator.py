@@ -12,9 +12,6 @@ from letsencrypt import interfaces
 from letsencrypt.plugins import common
 from letsencrypt.errors import PluginError
 
-# Hacky fix to include the git submodule (python-directadmin should be in PyPI?)
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../python-directadmin/'))
 import directadmin
 from letsencrypt_directadmin import challenge, deployer
 from urlparse import urlsplit

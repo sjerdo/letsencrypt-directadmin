@@ -5,9 +5,6 @@ from tempfile import mkstemp
 
 from letsencrypt import errors
 
-# Hacky fix to include the git submodule (python-directadmin should be in PyPI?)
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../python-directadmin/'))
 import directadmin
 
 logger = logging.getLogger(__name__)
