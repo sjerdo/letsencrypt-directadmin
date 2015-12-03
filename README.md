@@ -1,6 +1,10 @@
 # letsencrypt-directadmin
-
 # Installation
+* Clone this repository in the same directory using `git clone git@github.com:sjerdo/letsencrypt-directadmin.git`
+* Update git submodules using `git submodule init && git submodule update`
+* Install by running `python setup-directadmin.py develop`
+
+# Installation for development
 * Download the letsencrypt client at https://github.com/letsencrypt/letsencrypt and set it up.
   Eg:
 ```
