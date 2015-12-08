@@ -1,6 +1,6 @@
 # letsencrypt-directadmin
 # Installation
-* Clone this repository in the same directory using `git clone git@github.com:sjerdo/letsencrypt-directadmin.git`
+* Clone this repository in the same directory using `git clone https://github.com/sjerdo/letsencrypt-directadmin.git`
 * Install by running `python setup-directadmin.py develop`
 
 # Installation for development
@@ -12,7 +12,7 @@ cd letsencrypt
 ./bootstrap/install-deps.sh
 ./bootstrap/dev/venv.sh
 ```
-* Clone this repository in the same directory using `git clone git@github.com:sjerdo/letsencrypt-directadmin.git tmp && mv tmp/.git .gittwo && rm -rf tmp && git --git-dir=.gittwo reset --hard .`
+* Clone this repository in the same directory using `git clone https://github.com/sjerdo/letsencrypt-directadmin.git tmp && mv tmp/.git .gittwo && rm -rf tmp && git --git-dir=.gittwo reset --hard .`
 * Install by running `./venv/bin/python setup-directadmin.py develop`
 
 # Run
