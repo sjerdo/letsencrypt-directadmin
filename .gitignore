@@ -1,1 +1,2 @@
 /letsencrypt_directadmin.egg-info/
+*.pyc

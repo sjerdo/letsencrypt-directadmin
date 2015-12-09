@@ -1,11 +1,8 @@
 """DirectAdminHTTP01Challenge"""
 import logging
 import os
-from tempfile import mkstemp
 
 from letsencrypt import errors
-
-import directadmin
 
 logger = logging.getLogger(__name__)
 

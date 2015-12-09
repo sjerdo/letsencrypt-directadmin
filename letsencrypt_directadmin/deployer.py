@@ -1,7 +1,7 @@
 """DirectAdmin deployer"""
 import logging
 
-from letsencrypt import errors
+from letsencrypt.errors import PluginError
 
 logger = logging.getLogger(__name__)
 
@@ -41,11 +41,11 @@ class DirectAdminDeployer(object):
                 self.basedomain, self.chain_data)
 
         if not cert_response is True:
-            raise errors.PluginError('Install certificate failure: %s' % cert_response)
+            raise PluginError('Install certificate failure: %s' % cert_response)
         self.cert_installed = True
 
         if not cacert_response is True:
-            raise errors.PluginError('Install CA root certificate failure: %s' % cacert_response)
+            raise PluginError('Install CA root certificate failure: %s' % cacert_response)
         self.cacert_installed = True
 
         return self.cert_installed and self.cacert_installed
