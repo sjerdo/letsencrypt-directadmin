@@ -40,11 +40,11 @@ class DirectAdminDeployer(object):
             cacert_response = self.da_api_client.set_ca_root_ssl_certificate(
                 self.basedomain, self.chain_data)
 
-        if not cert_response is True:
+        if cert_response is not True:
             raise PluginError('Install certificate failure: %s' % cert_response)
         self.cert_installed = True
 
-        if not cacert_response is True:
+        if cacert_response is not True:
             raise PluginError('Install CA root certificate failure: %s' % cacert_response)
         self.cacert_installed = True
 

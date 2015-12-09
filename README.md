@@ -20,6 +20,12 @@ You can run the client by executing the command
 ```letsencrypt --configurator letsencrypt-directadmin:directadmin --letsencrypt-directadmin:directadmin-server https://www.example.com:2222/ --letsencrypt-directadmin:directadmin-username USERNAME --letsencrypt-directadmin:directadmin-login-key LOGINKEY```
 You can also use your DirectAdmin password instead of a Login Key, but this is not recommended.
 
+Another example for running the plugin which includes the credentials in the server url:
+```letsencrypt --configurator letsencrypt-directadin:directadmin --letsencrypt-directadmin:directadmin-server https://DAUSER:LOGINKEY@example.com:2222/```
+
+You can specify for which domain a certificate needs to be generated and installed by appending -d domain.com
+Eg: ```letsencrypt --configurator letsencrypt-directadin:directadmin --letsencrypt-directadmin:directadmin-server https://DAUSER:LOGINKEY@example.com:2222/ -d example.com -d www.example.com```
+
 # TODO: Run with configuration file
 
 # DirectAdmin Login Keys

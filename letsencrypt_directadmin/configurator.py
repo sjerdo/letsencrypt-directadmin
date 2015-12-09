@@ -7,7 +7,6 @@ import zope.interface
 
 from acme import challenges
 
-from letsencrypt import errors
 from letsencrypt import interfaces
 from letsencrypt.plugins import common
 from letsencrypt.errors import PluginError
@@ -37,11 +36,11 @@ automatically. """
     @classmethod
     def add_parser_arguments(cls, add):
         add("server", default=os.getenv('DA_SERVER'),
-            help="DirectAdmin Server (can include port, standard 2222, include http:// if the DA server does not support SSL)")
+            help="DirectAdmin server (can include port, standard 2222, include http:// if the DA server does not support SSL)")
         add("username", default=os.getenv('DA_USERNAME'),
-            help="DirectAdmin Username")
+            help="DirectAdmin username")
         add("login-key", default=os.getenv('DA_LOGIN_KEY'),
-            help="DirectAdmin Login Key")
+            help="DirectAdmin login key")
 
     def __init__(self, *args, **kwargs):
         """Initialize DirectAdmin Configurator."""
@@ -54,27 +53,41 @@ automatically. """
 
     def prepare(self):
         if self.da_api_client is None:
-            # TODO: Allow the user to specify the server as https://user:loginkey@localhost:2222/
-            if self.conf('server') is None:
-                # TODO: check if there is a local server at https://localhost:2222 (with non-ssl fallback?)
-                raise PluginError('User did not supply a DirectAdmin Server url.')
-            parsed_url = urlsplit(self.conf('server'))
-            self.da_api_client = directadmin.Api(
-                https=(False if parsed_url.scheme == 'http' else True),
-                hostname=(parsed_url.hostname if parsed_url.hostname else 'localhost'),
-                port=(parsed_url.port if parsed_url.port else 2222),
-                username=self.conf('username'),
-                password=self.conf('login-key'))
+            self.prepare_da_client()
         # TODO: check if da server exists, credentials are correct, permissions are okay and ssl certificates are supported
         self.da_api_client.test_login()
+
+    def prepare_da_client(self):
+        """ Prepare the DirectAdmin Web API Client """
+        if self.conf('server') is None:
+            # TODO: check if there is a local server at https://localhost:2222 (with non-ssl fallback?)
+            raise PluginError('User did not supply a DirectAdmin server url.')
+        parsed_url = urlsplit(self.conf('server'))
+
+        if self.conf('username') is not None:
+            username = self.conf('username')
+        elif parsed_url.username is not None:
+            username = parsed_url.username
+        else:
+            raise PluginError('User did not supply a DirectAdmin username')
+
+        if self.conf('login-key') is not None:
+            loginkey = self.conf('login-key')
+        elif parsed_url.password is not None:
+            loginkey = parsed_url.password
+        else:
+            raise PluginError('User did not supply a DirectAdmin login key')
+
+        self.da_api_client = directadmin.Api(
+            https=(False if parsed_url.scheme == 'http' else True),
+            hostname=(parsed_url.hostname if parsed_url.hostname else 'localhost'),
+            port=(parsed_url.port if parsed_url.port else 2222),
+            username=username,
+            password=loginkey)
 
     def get_chall_pref(self, domain):
         """Return list of challenge preferences."""
         # TODO: implement other challenges?
-        #               challenges.TLSSNI01
-        #        and/or challenges.RecoveryContact
-        #        and/or challenges.ProofOfPossession
-        #        and/or challenges.DNS
         return [challenges.HTTP01]
 
     def perform(self, achalls):
